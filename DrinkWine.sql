@@ -1,3 +1,5 @@
+create database drinkWine;
+
 create table users(
     idUser INT NOT NULL primary key auto_increment,
     name VARCHAR() NOT NULL,
