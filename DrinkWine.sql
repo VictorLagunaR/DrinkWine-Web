@@ -9,12 +9,19 @@ create table users(
     UNIQUE(email)
 );
 
+create table admin (
+    idAdmin INT NOT NULL primary key auto_increment,
+    name varchar() not null,
+    email VARCHAR(80) NOT NULL,
+    password VARCHAR() NOT NULL,
+    UNIQUE(email)
+);
+
 create table cart(
     idCart int not null primary key auto_increment,
     idUser int not null,
     CONSTRAINT fk_user_id
-    FOREIGN KEY (idUser) 
-    REFERENCES users (idUser)
+    FOREIGN KEY (idUser) REFERENCES users (idUser)
 );
 
 create table categories(
@@ -33,16 +40,17 @@ create table wines(
     idWine int not null primary key,
     idCategory varchar() not null,
     idCountry varchar() not null,
+    idAdmin int not null,
     year int not null,
     description varchar() not null,
     value decimal(6,2) not null,
     image varchar() not null,
     CONSTRAINT fk_category_id
-    FOREIGN KEY (idCategory) 
-    REFERENCES users (idCategory),
+    FOREIGN KEY (idCategory) REFERENCES users (idCategory),
     CONSTRAINT fk_country_id
-    FOREIGN KEY (idCountry) 
-    REFERENCES users (idCountry),
+    FOREIGN KEY (idCountry) REFERENCES users (idCountry),
+    CONSTRAINT fk_admin_id
+    FOREIGN KEY (idAdmin) REFERENCES users (idAdmin)
 );
 
 create table itemsCart(
@@ -51,13 +59,12 @@ create table itemsCart(
     itemValue decimal(6,2) not null,
     quantity int not null,
     CONSTRAINT fk_cart_id
-    FOREIGN KEY (idCart) 
-    REFERENCES users (idCart),
+    FOREIGN KEY (idCart) REFERENCES users (idCart)
 );
 
 create table purchases(
     idPurchase int not null auto_increment,
     method varchar() not null,
     totalValue decimal(6,2),
-    purchaseData data not null, 
+    purchaseData data not null
 );
