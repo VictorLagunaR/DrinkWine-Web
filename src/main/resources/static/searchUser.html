@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste de API - Buscar Usuário</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="mb-4">Buscar Usuário</h1>
+        <form id="searchForm">
+            <div class="form-group">
+                <label for="searchName">Nome do Usuário:</label>
+                <input type="text" class="form-control" id="searchName" name="searchName">
+            </div>
+            <button type="submit" class="btn btn-primary">Buscar</button>
+        </form>
+
+        <div id="searchResult" class="mt-4"></div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        document.getElementById('searchForm').addEventListener('submit', function(event) {
+            event.preventDefault(); 
+
+            const searchName = document.getElementById('searchName').value.trim();
+
+            fetch('/user/search?nameUser=' + encodeURIComponent(searchName))
+                .then(response => response.json())
+                .then(data => {
+                    const searchResultElement = document.getElementById('searchResult');
+                    searchResultElement.innerHTML = ''; // Limpa o resultado da busca antes de adicionar os usuários encontrados
+
+                    if (data.length === 0) {
+                        searchResultElement.innerHTML = '<p>Nenhum usuário encontrado.</p>';
+                    } else {
+                        const userList = document.createElement('ul');
+                        userList.className = 'list-group';
+
+                        data.forEach(user => {
+                            const li = document.createElement('li');
+                            li.className = 'list-group-item';
+                            li.textContent = user.nameUser;
+                            userList.appendChild(li);
+                        });
+
+                        searchResultElement.appendChild(userList);
+                    }
+                })
+                .catch(error => {
+                    console.error('Erro ao buscar usuários:', error);
+                    alert('Ocorreu um erro ao buscar usuários.');
+                });
+        });
+    </script>
+</body>
+</html>

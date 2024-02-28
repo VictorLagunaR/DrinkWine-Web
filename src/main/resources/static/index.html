@@ -4,26 +4,94 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Teste de API</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
 <body>
-    <h1>Teste de API - Adicionar Usuário</h1>
-    <form id="userForm">
-        <label for="nameUser">Nome:</label><br>
-        <input type="text" id="nameUser" name="nameUser"><br>
-        <label for="emailUser">E-mail:</label><br>
-        <input type="text" id="emailUser" name="emailUser"><br>
-        <label for="passwordUser">Senha:</label><br>
-        <input type="password" id="passwordUser" name="passwordUser"><br>
-        <label for="confirmPasswordUser">Confirme a Senha:</label><br>
-        <input type="password" id="confirmPasswordUser" name="confirmPasswordUser"><br>
-        <label for="genderUser">Gênero:</label><br>
-        <input type="text" id="genderUser" name="genderUser"><br>
-        <button type="submit">Adicionar Usuário</button>
-    </form>
+    <div class="container mt-5">
+        <h1 class="mb-4">Teste de API - Adicionar Usuário</h1>
+        <form id="userForm">
+            <div class="form-group">
+                <label for="nameUser">Nome:</label>
+                <input type="text" class="form-control" id="nameUser" name="nameUser" required>
+            </div>
+            <div class="form-group">
+                <label for="emailUser">E-mail:</label>
+                <input type="email" class="form-control" id="emailUser" name="emailUser" required>
+            </div>
+            <div class="form-group">
+                <label for="passwordUser">Senha:</label>
+                <input type="password" class="form-control" id="passwordUser" name="passwordUser" required>
+            </div>
+            <div class="form-group">
+                <label for="confirmPasswordUser">Confirme a Senha:</label>
+                <input type="password" class="form-control" id="confirmPasswordUser" name="confirmPasswordUser" required>
+            </div>
+            <div class="form-group">
+                <label for="genderUser">Gênero:</label>
+                <input type="text" class="form-control" id="genderUser" name="genderUser">
+            </div>
+            <button type="submit" class="btn btn-primary">Adicionar Usuário</button>
+        </form>
 
+        <h2 class="mt-5">Lista de Usuários Cadastrados</h2>
+        <ul id="userList" class="list-group"></ul>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script>
+        function loadUserList() {
+            fetch('/user')
+                .then(response => response.json())
+                .then(data => {
+                    const userListElement = document.getElementById('userList');
+                    userListElement.innerHTML = ''; // Limpa a lista antes de adicionar os usuários
+
+                    data.forEach(user => {
+                        const li = document.createElement('li');
+                        li.className = 'list-group-item';
+                        li.textContent = user.nameUser;
+
+                        const deleteButton = document.createElement('button');
+                        deleteButton.className = 'btn btn-danger btn-sm ml-2';
+                        deleteButton.textContent = 'Excluir';
+                        deleteButton.addEventListener('click', function() {
+                            deleteUser(user.idUser); // Chama a função para excluir o usuário ao clicar no botão
+                        });
+
+                        li.appendChild(deleteButton);
+                        userListElement.appendChild(li);
+                    });
+                })
+                .catch(error => {
+                    console.error('Erro ao carregar lista de usuários:', error);
+                    alert('Ocorreu um erro ao carregar a lista de usuários.');
+                });
+        }
+
+        window.onload = loadUserList;
+
+        // Função para excluir um usuário
+        function deleteUser(userId) {
+            fetch('/user/' + userId, {
+                method: 'DELETE'
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Erro ao excluir usuário');
+                }
+                alert('Usuário excluído com sucesso!');
+                loadUserList(); // Recarrega a lista de usuários após a exclusão
+            })
+            .catch(error => {
+                console.error('Erro:', error);
+                alert('Ocorreu um erro ao excluir o usuário.');
+            });
+        }
+
         document.getElementById('userForm').addEventListener('submit', function(event) {
-            event.preventDefault(); // Evita o comportamento padrão do formulário
+            event.preventDefault(); 
 
             var formData = new FormData(this);
 
@@ -36,7 +104,7 @@
                     throw new Error('Erro ao adicionar usuário');
                 }
                 alert('Usuário adicionado com sucesso!');
-                location.reload(); // Atualiza a página após o sucesso
+                loadUserList(); // Recarrega a lista de usuários após o sucesso
             })
             .catch(error => {
                 console.error('Erro:', error);
