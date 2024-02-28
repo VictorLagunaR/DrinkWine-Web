@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Login</h1>
+        <form id="loginForm">
+            <div class="form-group">
+                <label for="emailUser">Email:</label>
+                <input type="email" class="form-control" id="emailUser" name="emailUser" required>
+            </div>
+            <div class="form-group">
+                <label for="passwordUser">Password:</label>
+                <input type="password" class="form-control" id="passwordUser" name="passwordUser" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Login</button>
+            <p id="errorMessage" style="color: red; display: none;">Credenciais inválidas!</p>
+            <p id="successMessage" style="color: green; display: none;">E-mail correto!</p>
+        </form>
+    </div>
+
+    <!-- Bootstrap JS (opcional, se você precisar de componentes interativos do Bootstrap) -->
+    <!-- <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script> -->
+    <!-- <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script> -->
+    <!-- <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script> -->
+
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            var formData = new FormData(this);
+
+            fetch('/backoffice', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => {
+                if (response.redirected) {
+                    document.getElementById('successMessage').style.display = 'block'; 
+                    window.location.href = response.url; 
+                } else {
+                    document.getElementById('errorMessage').style.display = 'block'; 
+                }
+            })
+            .catch(error => {
+                console.error('Erro:', error);
+                alert('Ocorreu um erro ao fazer login.');
+            });
+        });
+    </script>
+</body>
+</html>
