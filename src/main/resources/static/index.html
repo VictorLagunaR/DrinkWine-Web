@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste de API</title>
+</head>
+<body>
+    <h1>Teste de API - Adicionar Usuário</h1>
+    <form id="userForm">
+        <label for="nameUser">Nome:</label><br>
+        <input type="text" id="nameUser" name="nameUser"><br>
+        <label for="emailUser">E-mail:</label><br>
+        <input type="text" id="emailUser" name="emailUser"><br>
+        <label for="passwordUser">Senha:</label><br>
+        <input type="password" id="passwordUser" name="passwordUser"><br>
+        <label for="confirmPasswordUser">Confirme a Senha:</label><br>
+        <input type="password" id="confirmPasswordUser" name="confirmPasswordUser"><br>
+        <label for="genderUser">Gênero:</label><br>
+        <input type="text" id="genderUser" name="genderUser"><br>
+        <button type="submit">Adicionar Usuário</button>
+    </form>
+
+    <script>
+        document.getElementById('userForm').addEventListener('submit', function(event) {
+            event.preventDefault(); // Evita o comportamento padrão do formulário
+
+            var formData = new FormData(this);
+
+            fetch('/user', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Erro ao adicionar usuário');
+                }
+                alert('Usuário adicionado com sucesso!');
+                location.reload(); // Atualiza a página após o sucesso
+            })
+            .catch(error => {
+                console.error('Erro:', error);
+                alert('Ocorreu um erro ao adicionar o usuário.');
+            });
+        });
+    </script>
+</body>
+</html>

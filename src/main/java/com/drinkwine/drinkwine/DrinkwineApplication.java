@@ -8,6 +8,6 @@ public class DrinkwineApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(DrinkwineApplication.class, args);
-	}
 
+	}
 }
